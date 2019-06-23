@@ -88,9 +88,9 @@ if __name__ == '__main__':
             s[38] = np.cos(theta)
             s = np.array([s])
             action = brain.predict_a(s).reshape(-1)
-            vel.linear.x = action[0]
+            vel.linear.x = action[0]*0.8
             vel.linear.y = 0.0
-            vel.angular.z = action[1]
+            vel.angular.z = -action[1]*0.8
             if min_lidar < 0.6:
                 vel.linear.x = 0.0
                 a = 1

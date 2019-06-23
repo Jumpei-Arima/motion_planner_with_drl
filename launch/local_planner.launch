@@ -1,5 +1,7 @@
 <?xml version="1.0"?>
 <launch>
     <node name="localmap2scan" pkg="motion_planner_with_drl" type="localmap_scan"/>
-    <node name="mpdrl" pkg="motion_planner_with_drl" type="motion_planner_with_drl.py"/>
+    <node name="mpdrl" pkg="motion_planner_with_drl" type="motion_planner_with_drl.py">
+		<remap from="/cmd_vel" to="/local_path/cmd_vel"/>
+	</node>
 </launch>
