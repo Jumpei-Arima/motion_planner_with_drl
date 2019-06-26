@@ -8,8 +8,7 @@ pip install tensorflow
 
 # How to use
 ```
-rosrun motion_planner_with_drl localmap_scan
-rosrun motion_planner_with_drl motion_planner_drl.py
+roslaunch motion_planner_with_drl local_planner.launch
 ```
 
 ## published topics
