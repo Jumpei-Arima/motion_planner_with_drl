@@ -18,6 +18,7 @@ print(NN_MODEL)
 lidar = np.zeros(36)
 goal = np.zeros(2)
 target_yaw = 0.0
+dis = 0.0
 target_sub_ = False
 
 def angle_nomalize(z):
@@ -42,8 +43,10 @@ def get_yaw(q):
 
 def callback_target(data):
     global target_yaw 
+    global dis
     global target_sub_ 
     target_yaw = get_yaw(data.pose.orientation)
+    dis = np.sqrt(data.pose.position.x*data.pose.position.x + data.pose.position.y*data.pose.position.y)
     target_sub_ = True 
 
 def callback_laser(data):
@@ -82,21 +85,13 @@ if __name__ == '__main__':
                     min_lidar = lidar[i]
                     min_index = i
                 s[i] = lidar[i]
-            s[36] = 5.0 
+            s[36] = dis
             s[37] = np.sin(theta)
             s[38] = np.cos(theta)
             s = np.array([s])
             action = brain.predict_a(s).reshape(-1)
-            vel.linear.x = action[0]*0.6
-            vel.linear.y = 0.0
+            vel.linear.x = action[0]*0.8
             vel.angular.z = action[1]*0.6
-            if min_lidar < 0.5 and (min_index > 30 or min_index < 6):
-                vel.linear.x = 0.0
-                a = 1
-                if min_index > 18:
-                    a = -1
-                vel.angular.z = a*0.3
-                print("=====safety stop=====")
             print("action: v=%f[m/s], w=%f[rad/s]" % (action[0]*0.6,action[1]*0.6))
             vel_pub.publish(vel)
         rate.sleep()
