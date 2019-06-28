@@ -85,13 +85,13 @@ if __name__ == '__main__':
                     min_lidar = lidar[i]
                     min_index = i
                 s[i] = lidar[i]
-            s[36] = dis
+            s[36] = 5.0
             s[37] = np.sin(theta)
             s[38] = np.cos(theta)
             s = np.array([s])
             action = brain.predict_a(s).reshape(-1)
             vel.linear.x = action[0]*0.8
             vel.angular.z = action[1]*0.6
-            print("action: v=%f[m/s], w=%f[rad/s]" % (action[0]*0.6,action[1]*0.6))
+            print("action: v=%f[m/s], w=%f[rad/s]" % (action[0]*0.8,action[1]*0.6))
             vel_pub.publish(vel)
         rate.sleep()
