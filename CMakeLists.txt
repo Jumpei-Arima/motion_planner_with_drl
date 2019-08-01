@@ -11,11 +11,14 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   tf
+  sensor_msgs
+  geometry_msgs
 )
+
+find_package(Torch REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -135,6 +138,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/motion_planner_with_drl_node.cpp)
 add_executable(localmap_scan src/localmap_scan.cpp)
+add_executable(motion_planner_with_drl src/motion_planner_with_drl.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -148,6 +152,9 @@ add_executable(localmap_scan src/localmap_scan.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(localmap_scan ${catkin_LIBRARIES})
+target_link_libraries(motion_planner_with_drl ${catkin_LIBRARIES} ${TORCH_LIBRARIES})
+
+set_property(TARGET motion_planner_with_drl PROPERTY CXX_STANDARD 11)
 
 #############
 ## Install ##
