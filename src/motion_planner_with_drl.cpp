@@ -49,7 +49,7 @@ MPDRL::MPDRL()
 
 	private_nh.param("HZ", HZ, {20});
 
-	module = torch::jit::load("/home/amsl/model.pt");
+	module = torch::jit::load("/home/amsl/workspace/mpdrl/examples/models/ppo_model.pt");
 	target_received = false;
 	scan_received = false;
 	dis = 0.0;
@@ -99,13 +99,9 @@ void MPDRL::process()
 			state.push_back(sin(yaw));
 			state.push_back(cos(yaw));
 			torch::Tensor input = torch::tensor({state}).view({1,39});
-			std::cout << input << std::endl;
-			auto output = module.forward({input}).toTuple();
-			std::cout << output << std::endl;
-			vel.linear.x = output->elements()[0].toTensor()[0][0].item<float>();
-			std::cout << vel.linear.x << std::endl;
-			vel.angular.z = output->elements()[0].toTensor()[0][1].item<float>();
-			std::cout << vel.linear.z << std::endl;
+			auto output = module.forward({input}).toTensor();
+			vel.linear.x = output[0][0].item<float>();
+			vel.angular.z = output[0][1].item<float>();
 			std::cout <<  vel << std::endl;
 		}else{
 			std::cout << "local goal : " << target_received << std::endl;
@@ -114,8 +110,6 @@ void MPDRL::process()
 			vel.angular.z = 0.0;
 		}
 		vel_pub.publish(vel);
-		// target_received = false;
-		// scan_received = false;
 		loop_rate.sleep();
 		ros::spinOnce();
 	}
