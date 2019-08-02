@@ -15,6 +15,8 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
 )
 
+set(Caffe2_DIR "$ENV{HOME}pytorch/torch/share/cmake/Caffe2/")
+set(Torch_DIR "$ENV{HOME}/pytorch/torch/share/cmake/Torch")
 find_package(Torch REQUIRED)
 
 ## System dependencies are found with CMake's conventions
@@ -153,8 +155,6 @@ add_executable(motion_planner_with_drl src/motion_planner_with_drl.cpp)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(localmap_scan ${catkin_LIBRARIES})
 target_link_libraries(motion_planner_with_drl ${catkin_LIBRARIES} ${TORCH_LIBRARIES})
-
-set_property(TARGET motion_planner_with_drl PROPERTY CXX_STANDARD 11)
 
 #############
 ## Install ##
