@@ -31,6 +31,9 @@ class MPDRL{
 		bool scan_received;
 		float dis;
 		float yaw;
+		double pre_v;
+		double pre_w;
+		double epsilon;
 		float obs[36];
 		int HZ;
 		double MAX_SPEED;
@@ -51,6 +54,7 @@ MPDRL::MPDRL()
 	vel_pub = nh.advertise<geometry_msgs::Twist>("/local_path/cmd_vel", 1, true);
 
 	private_nh.param("HZ", HZ, {20});
+	private_nh.param("EPSILON", epsilon, {1.0});
 	private_nh.param("MAX_SPEED", MAX_SPEED, {1.0});
 	private_nh.param("MAX_YAWRATE", MAX_YAWRATE, {1.0});
 	private_nh.param("MODEL_PATH", MODEL_PATH, {"model.pt"});
@@ -61,6 +65,8 @@ MPDRL::MPDRL()
 	scan_received = false;
 	dis = 0.0;
 	yaw = 0.0;
+	pre_v = 0.0; 
+	pre_w = 0.0; 
 }
 
 void MPDRL::ScanCallback(const sensor_msgs::LaserScanConstPtr& msg)
@@ -117,10 +123,14 @@ void MPDRL::process()
 			std::cout << "local goal : " << target_received << std::endl;
 			std::cout << "scan       : " << scan_received << std::endl;
 		}
+		v = std::min(std::max(pre_v-epsilon, v), pre_v+epsilon);
+		w = std::min(std::max(pre_w-epsilon, w), pre_w+epsilon);
 		vel.linear.x = v;
 		vel.angular.z = w;
 		std::cout <<  vel << std::endl;
 		vel_pub.publish(vel);
+		pre_v = v;
+		pre_w = w;
 		loop_rate.sleep();
 		ros::spinOnce();
 	}
