@@ -33,6 +33,9 @@ class MPDRL{
 		float yaw;
 		float obs[36];
 		int HZ;
+		double MAX_SPEED;
+		double MAX_YAWRATE;
+		std::string MODEL_PATH;
 
 		double get_yaw(geometry_msgs::Quaternion q);
 };
@@ -48,8 +51,12 @@ MPDRL::MPDRL()
 	vel_pub = nh.advertise<geometry_msgs::Twist>("/local_path/cmd_vel", 1, true);
 
 	private_nh.param("HZ", HZ, {20});
+	private_nh.param("MAX_SPEED", MAX_SPEED, {1.0});
+	private_nh.param("MAX_YAWRATE", MAX_YAWRATE, {1.0});
+	private_nh.param("MODEL_PATH", MODEL_PATH, {"model.pt"});
+	std::cout << "Model path : " << MODEL_PATH << std::endl;
 
-	module = torch::jit::load("/home/amsl/workspace/mpdrl/examples/models/ppo_model.pt");
+	module = torch::jit::load(MODEL_PATH);
 	target_received = false;
 	scan_received = false;
 	dis = 0.0;
@@ -90,6 +97,8 @@ void MPDRL::process()
 	while(ros::ok()){
 		std::cout << "=======================" << std::endl;
 		std::cout << "motion_planner_with_drl" << std::endl;
+		double v = 0.0;
+		double w = 0.0;
 		if(target_received && scan_received){
 			std::vector<float> state;
 			for(auto o : obs){
@@ -100,15 +109,17 @@ void MPDRL::process()
 			state.push_back(cos(yaw));
 			torch::Tensor input = torch::tensor({state}).view({1,39});
 			auto output = module.forward({input}).toTensor();
-			vel.linear.x = output[0][0].item<float>();
-			vel.angular.z = output[0][1].item<float>();
-			std::cout <<  vel << std::endl;
+			v = (output[0][0].item<float>() + 1.0) * 0.5 * MAX_SPEED;
+			w = -MAX_YAWRATE + (output[0][1].item<float>() + 1.0) * MAX_YAWRATE;
+			v = std::min(std::max(0.0, v), MAX_SPEED);
+			w = std::min(std::max(-MAX_YAWRATE, w), MAX_YAWRATE);
 		}else{
 			std::cout << "local goal : " << target_received << std::endl;
 			std::cout << "scan       : " << scan_received << std::endl;
-			vel.linear.x = 0.0;
-			vel.angular.z = 0.0;
 		}
+		vel.linear.x = v;
+		vel.angular.z = w;
+		std::cout <<  vel << std::endl;
 		vel_pub.publish(vel);
 		loop_rate.sleep();
 		ros::spinOnce();

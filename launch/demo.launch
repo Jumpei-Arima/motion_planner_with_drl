@@ -5,9 +5,7 @@
 	<arg name="max_yawrate" default="1.0"/>
 	<arg name="model_path" default="/home/amsl/models/libtorch_model/ppo_model.pt"/>
 
-    <node name="localmap2scan" pkg="motion_planner_with_drl" type="localmap_scan"/>
-    <!-- <node name="mpdrl" pkg="motion_planner_with_drl" type="motion_planner_with_drl.py"> -->
-	<!-- 	<remap from="/cmd_vel" to="/local_path/cmd_vel"/> -->
+	<node name="demo_navigator" pkg="motion_planner_with_drl" type="demo_navigator"/>
     <node name="mpdrl" pkg="motion_planner_with_drl" type="motion_planner_with_drl">
 		<param name="HZ" value="$(arg hz)" type="int"/>
 		<param name="MAX_SPEED" value="$(arg max_speed)" type="double"/>
