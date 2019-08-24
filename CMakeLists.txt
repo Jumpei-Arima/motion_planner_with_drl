@@ -141,6 +141,7 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/motion_planner_with_drl_node.cpp)
 add_executable(localmap_scan src/localmap_scan.cpp)
 add_executable(demo_navigator src/demo_navigator.cpp)
+add_executable(demo_navigator_with_odom src/demo_navigator_with_odom.cpp)
 add_executable(motion_planner_with_drl src/motion_planner_with_drl.cpp)
 
 ## Rename C++ executable without prefix
@@ -156,6 +157,7 @@ add_executable(motion_planner_with_drl src/motion_planner_with_drl.cpp)
 ## Specify libraries to link a library or executable target against
 target_link_libraries(localmap_scan ${catkin_LIBRARIES})
 target_link_libraries(demo_navigator ${catkin_LIBRARIES})
+target_link_libraries(demo_navigator_with_odom ${catkin_LIBRARIES})
 target_link_libraries(motion_planner_with_drl ${catkin_LIBRARIES} ${TORCH_LIBRARIES})
 
 #############
