@@ -68,10 +68,9 @@ void DemoNavigator::OdomCallback(const nav_msgs::OdometryConstPtr& msg)
 	double dt = (current_time-last_time).toSec();
 	last_time = current_time;
 	double dist = odom.twist.twist.linear.x*dt;
-	double yaw = odom.twist.twist.angular.z*dt;
-	position_x += dist * cos(yaw);
-	position_y += dist * sin(yaw);
-	orientation_yaw += yaw;
+	orientation_yaw += odom.twist.twist.angular.z*dt;
+	position_x += dist * cos(orientation_yaw);
+	position_y += dist * sin(orientation_yaw);
 	float dx = -position_x + goals[goal_count][0];
 	float dy = -position_y + goals[goal_count][1];
 	float dis = sqrt(dx*dx + dy*dy);
