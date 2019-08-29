@@ -9,7 +9,7 @@ pip install tensorflow
 
 if you have model learned by pytorch
 you need to convert your PyTorch Model to Torch Script by tracing.
-(watch here)[https://pytorch.org/tutorials/advanced/cpp_export.html]
+[watch here](https://pytorch.org/tutorials/advanced/cpp_export.html)
 
 # How to use
 if you use tensorflow model -> run this launch
@@ -24,9 +24,9 @@ roslaunch motion_planner_with_drl demo.launch
 
 input
 - local_map
-  you need to convert local mpa to scan by using (localmap2scan)[https://github.com/Jumpei-Arima/motion_planner_with_drl/blob/master/src/localmap_scan.cpp].
+  you need to convert local mpa to scan by using [localmap2scan](https://github.com/Jumpei-Arima/motion_planner_with_drl/blob/master/src/localmap_scan.cpp).
 - point cloud
-  - you need to convert pointcloud to scan by using (pointcloud_to_laserscan)[http://wiki.ros.org/pointcloud_to_laserscan] package.
+  - you need to convert pointcloud to scan by using [pointcloud_to_laserscan](http://wiki.ros.org/pointcloud_to_laserscan) package.
 - scan
 
 ## published topics
