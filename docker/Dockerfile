@@ -7,15 +7,13 @@ RUN apt-get update
 RUN apt-get install -y sudo\
                        wget\
                        lsb-release\
-                       mesa-utils \
-                       gfortran \
-                       vim \
-                       python-pip \
+					   git \
     && rm -rf /var/lib/apt/lists/*
 
-RUN pip install typing
-
 RUN apt-get update
+
+RUN apt-get install -y python-pip \
+	&& pip install typing
 
 RUN apt-get install -y ros-kinetic-pcl-ros* \
     && rm -rf /var/lib/apt/lists/*
@@ -34,9 +32,10 @@ ENV ROS_PACKAGE_PATH=/root/catkin_ws:$ROS_PACKAGE_PATH
 
 ENV ROS_WORKSPACE=/root/catkin_ws
 
-RUN git clone https://github.com/pytorch/pytorch \
+RUN git clone https://github.com/pytorch/pytorch.git
 
 WORKDIR /root/pytorch
+
 RUN git submodule update --init --recursive \
     && python setup.py build\
     && mkdir build_libtorch \
