@@ -3,7 +3,7 @@
 	<arg name="hz" default="10"/>
 	<arg name="max_speed" default="1.0"/>
 	<arg name="max_yawrate" default="1.0"/>
-	<arg name="model_path" default="/root/catkin_ws/src/motion_planner_with_drl/models/libtorch_model/ppo_model.pt"/>
+	<arg name="model_path" default="/root/models/libtorch_model/ppo_model.pt"/>
 
     <node name="localmap2scan" pkg="motion_planner_with_drl" type="localmap_scan"/>
     <!-- <node name="mpdrl" pkg="motion_planner_with_drl" type="motion_planner_with_drl.py"> -->

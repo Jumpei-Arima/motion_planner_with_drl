@@ -42,6 +42,12 @@ RUN git submodule update --init --recursive \
     && cd build_libtorch \
     && python ../tools/build_libtorch.py
 
+WORKDIR /root/catkin_ws/src
+
+RUN git clone https://github.com/amslabtech/motion_planner_with_drl.git \
+	&& cd /root/catkin_ws \
+	&& source /opt/ros/kinetic/setup.bash; catkin_make
+
 WORKDIR /root
 
 COPY ./ros_entrypoint.sh /
