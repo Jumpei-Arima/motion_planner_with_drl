@@ -44,7 +44,7 @@ RUN git submodule update --init --recursive \
 
 WORKDIR /root/catkin_ws/src
 
-RUN git clone https://github.com/amslabtech/motion_planner_with_drl.git \
+RUN git clone https://github.com/jumpei-arima/motion_planner_with_drl.git \
 	&& cd /root/catkin_ws \
 	&& source /opt/ros/kinetic/setup.bash; catkin_make
 
