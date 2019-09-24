@@ -2,7 +2,10 @@ cmake_minimum_required(VERSION 2.8.3)
 project(motion_planner_with_drl)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
-add_compile_options(-std=c++11)
+# add_compile_options(-std=c++11)
+SET(CMAKE_CXX_FLAGS "-std=c++11 -O2 -g -Wall ${CMAKE_CXX_FLAGS}")
+
+string(ASCII 27 ESC)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -15,9 +18,16 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
 )
 
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(TORCH Torch)
+if(${TORCH_FOUND})
+	message("-- ${ESC}[32mTORCH was found!!!${ESC}[0m")
+else()
+	message("-- ${ESC}[31mTORCH was NOT found!!!${ESC}[0m")
+	message("-- ${ESC}[031mPYTORCH nodes wil not be built${ESC}[0m")
+endif()
 set(Caffe2_DIR "$ENV{HOME}pytorch/torch/share/cmake/Caffe2/")
 set(Torch_DIR "$ENV{HOME}/pytorch/torch/share/cmake/Torch")
-find_package(Torch REQUIRED)
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
@@ -142,7 +152,9 @@ include_directories(
 add_executable(localmap_scan src/localmap_scan.cpp)
 add_executable(demo_navigator src/demo_navigator.cpp)
 add_executable(demo_navigator_with_odom src/demo_navigator_with_odom.cpp)
-add_executable(motion_planner_with_drl src/motion_planner_with_drl.cpp)
+if(${TORCH_FOUND})
+	add_executable(motion_planner_with_drl src/motion_planner_with_drl.cpp)
+endif()
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -158,7 +170,9 @@ add_executable(motion_planner_with_drl src/motion_planner_with_drl.cpp)
 target_link_libraries(localmap_scan ${catkin_LIBRARIES})
 target_link_libraries(demo_navigator ${catkin_LIBRARIES})
 target_link_libraries(demo_navigator_with_odom ${catkin_LIBRARIES})
-target_link_libraries(motion_planner_with_drl ${catkin_LIBRARIES} ${TORCH_LIBRARIES})
+if(${TORCH_FOUND})
+	target_link_libraries(motion_planner_with_drl ${catkin_LIBRARIES} ${TORCH_LIBRARIES})
+endif()
 
 #############
 ## Install ##
