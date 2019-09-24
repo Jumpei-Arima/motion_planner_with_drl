@@ -22,22 +22,17 @@ class DemoNavigator{
 		double position_x;
 		double position_y;
 		double orientation_yaw;
-		static const float goals[][2];
+		std::vector<std::vector<float>> goals;
 		float tolerance;
 		int goal_count;
 		bool finish;
 		bool odom_callback_first;
+		std::string ROBOT_FRAME;
 
 		double normalize(double z);
 		double angle_diff(double a, double b);
 		double get_yaw(geometry_msgs::Quaternion q);
 		ros::Time last_time;
-};
-
-const float DemoNavigator::goals[3][2] = {
-	{ 16.999, 6.716},
-	{-16.200, 8.196},
-	{  0.516, 0.112}
 };
 
 DemoNavigator::DemoNavigator()
@@ -55,41 +50,50 @@ DemoNavigator::DemoNavigator()
 	goal_count = 0;
 	finish = false;
 	odom_callback_first = true;
+	goals = {
+		{ 16.999, 6.716},
+		{-16.200, 8.196},
+		{  0.516, 0.112}
+	};
+
 }
 
 void DemoNavigator::OdomCallback(const nav_msgs::OdometryConstPtr& msg)
 {
-	nav_msgs::Odometry odom = *msg;
-	ros::Time current_time = odom.header.stamp;
-	if(odom_callback_first){
-		last_time = current_time;
-		odom_callback_first = false;
-	}
-	double dt = (current_time-last_time).toSec();
-	last_time = current_time;
-	double dist = odom.twist.twist.linear.x*dt;
-	orientation_yaw += odom.twist.twist.angular.z*dt;
-	position_x += dist * cos(orientation_yaw);
-	position_y += dist * sin(orientation_yaw);
-	float dx = -position_x + goals[goal_count][0];
-	float dy = -position_y + goals[goal_count][1];
-	float dis = sqrt(dx*dx + dy*dy);
-	if(dis < tolerance){
-		std::cout << "goal!!!!!!!!" << std::endl;
-		goal_count += 1;
-		if(goal_count > sizeof(goals)/sizeof(*goals)){
-			finish = true;
-		}
-	}
+
 	geometry_msgs::PoseStamped local_goal;
+	local_goal.header.stamp = ros::Time::now();
+	local_goal.header.frame_id = ROBOT_FRAME;
 	if(!finish){
-		local_goal.pose.position.x = dx;
-		local_goal.pose.position.y = dy;
+		// calc odom
+		nav_msgs::Odometry odom = *msg;
+		ros::Time current_time = odom.header.stamp;
+		if(odom_callback_first){
+			last_time = current_time;
+			odom_callback_first = false;
+		}
+		double dt = (current_time-last_time).toSec();
+		last_time = current_time;
+		double dist = odom.twist.twist.linear.x*dt;
+		orientation_yaw += odom.twist.twist.angular.z*dt;
+		position_x += dist * cos(orientation_yaw);
+		position_y += dist * sin(orientation_yaw);
+		
+		//calc relative goal(local_goal)
+		float dx = -position_x + goals[goal_count][0];
+		float dy = -position_y + goals[goal_count][1];
+		float dis = sqrt(dx*dx + dy*dy);
+		if(dis < tolerance){
+			std::cout << "goal!!!!!!!!" << std::endl;
+			goal_count += 1;
+			if(goal_count == goals.size()){
+				finish = true;
+			}
+		}
 		float yaw = angle_diff(atan2(dy,dx), orientation_yaw);
-		local_goal.pose.orientation.x = 0;
-		local_goal.pose.orientation.y = 0;
-		local_goal.pose.orientation.z = sin(yaw/2);
-		local_goal.pose.orientation.w = cos(yaw/2);
+		local_goal.pose.position.x = dis*cos(yaw);
+		local_goal.pose.position.y = dis*sin(yaw);
+		local_goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
 		std::cout << "goal count "<< goal_count << std::endl;
 	}else{
 		std::cout << "========finish========" << std::endl;

@@ -18,21 +18,15 @@ class DemoNavigator{
 		//publisher
 		ros::Publisher local_goal_pub;
 
-		geometry_msgs::PoseWithCovarianceStamped current_pose;
-		static const float goals[][2];
+		std::vector<std::vector<float>> goals;
 		float tolerance;
 		int goal_count;
 		bool finish;
+		std::string ROBOT_FRAME;
 
 		double normalize(double z);
 		double angle_diff(double a, double b);
 		double get_yaw(geometry_msgs::Quaternion q);
-};
-
-const float DemoNavigator::goals[3][2] = {
-	{ 16.999, 6.716},
-	{-16.200, 8.196},
-	{  0.516, 0.112}
 };
 
 DemoNavigator::DemoNavigator()
@@ -43,33 +37,40 @@ DemoNavigator::DemoNavigator()
 
 	//publisher
 	local_goal_pub = nh.advertise<geometry_msgs::PoseStamped>("/local_goal",1,true);
+
+	ROBOT_FRAME = "base_link";
 	tolerance = 1.0; //[m]
 	goal_count = 0;
 	finish = false;
+	goals = {
+		{ 16.999, 6.716},
+		{-16.200, 8.196},
+		{  0.516, 0.112}
+	};
+
 }
 
 void DemoNavigator::PoseCallback(const geometry_msgs::PoseWithCovarianceStampedConstPtr& msg)
 {
-	current_pose = *msg;
-	float dx = -current_pose.pose.pose.position.x + goals[goal_count][0];
-	float dy = -current_pose.pose.pose.position.y + goals[goal_count][1];
-	float dis = sqrt(dx*dx + dy*dy);
-	if(dis < tolerance){
-		std::cout << "goal!!!!!!!!" << std::endl;
-		goal_count += 1;
-		if(goal_count > sizeof(goals)/sizeof(*goals)){
-			finish = true;
-		}
-	}
 	geometry_msgs::PoseStamped local_goal;
+	local_goal.header.stamp = ros::Time::now();
+	local_goal.header.frame_id = ROBOT_FRAME;
 	if(!finish){
-		local_goal.pose.position.x = dx;
-		local_goal.pose.position.y = dy;
+		geometry_msgs::PoseWithCovarianceStamped current_pose = *msg;
+		float dx = goals[goal_count][0] - current_pose.pose.pose.position.x;
+		float dy = goals[goal_count][1] - current_pose.pose.pose.position.y;
+		float dis = sqrt(dx*dx + dy*dy);
+		if(dis < tolerance){
+			std::cout << "goal!!!!!!!!" << std::endl;
+			goal_count += 1;
+			if(goal_count == goals.size()){
+				finish = true;
+			}
+		}
 		float yaw = angle_diff(atan2(dy,dx), get_yaw(current_pose.pose.pose.orientation));
-		local_goal.pose.orientation.x = 0;
-		local_goal.pose.orientation.y = 0;
-		local_goal.pose.orientation.z = sin(yaw/2);
-		local_goal.pose.orientation.w = cos(yaw/2);
+		local_goal.pose.position.x = dis*cos(yaw);
+		local_goal.pose.position.y = dis*sin(yaw);
+		local_goal.pose.orientation = tf::createQuaternionMsgFromYaw(yaw);
 		std::cout << "goal count "<< goal_count << std::endl;
 	}else{
 		std::cout << "========finish========" << std::endl;
