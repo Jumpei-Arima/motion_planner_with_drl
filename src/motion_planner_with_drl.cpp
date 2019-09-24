@@ -125,6 +125,10 @@ void MPDRL::process()
 		}
 		v = std::min(std::max(pre_v-epsilon, v), pre_v+epsilon);
 		w = std::min(std::max(pre_w-epsilon, w), pre_w+epsilon);
+		if(dis<=0.1){
+			v = 0.0;
+			w = 0.0;
+		}
 		vel.linear.x = v;
 		vel.angular.z = w;
 		std::cout <<  vel << std::endl;
