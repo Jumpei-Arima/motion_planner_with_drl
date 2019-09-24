@@ -42,6 +42,8 @@ RUN git submodule update --init --recursive \
     && cd build_libtorch \
     && python ../tools/build_libtorch.py
 
+RUN apt-get update && apt-get install -y vim && rm -rf /var/lib/apt/lists/*
+
 WORKDIR /root/catkin_ws/src
 
 RUN git clone https://github.com/jumpei-arima/motion_planner_with_drl.git \
