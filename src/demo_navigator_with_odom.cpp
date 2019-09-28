@@ -50,6 +50,7 @@ DemoNavigator::DemoNavigator()
 	goal_count = 0;
 	finish = false;
 	odom_callback_first = true;
+    ROBOT_FRAME = "base_link";
 	goals = {
 		{ 16.999, 6.716},
 		{-16.200, 8.196},
@@ -78,7 +79,7 @@ void DemoNavigator::OdomCallback(const nav_msgs::OdometryConstPtr& msg)
 		orientation_yaw += odom.twist.twist.angular.z*dt;
 		position_x += dist * cos(orientation_yaw);
 		position_y += dist * sin(orientation_yaw);
-		
+
 		//calc relative goal(local_goal)
 		float dx = -position_x + goals[goal_count][0];
 		float dy = -position_y + goals[goal_count][1];

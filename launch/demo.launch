@@ -4,9 +4,11 @@
     <arg name="epsilon" default="0.1"/>
     <arg name="max_speed" default="0.6"/>
     <arg name="max_yawrate" default="0.6"/>
-    <arg name="model_path" default="/home/amsl/models/libtorch_model/ppo_model.pt"/>
+    <arg name="model_path" default="/root/models/libtorch_model/ppo_model.pt"/>
 
-    <node name="demo_navigator" pkg="motion_planner_with_drl" type="demo_navigator_odom"/>
+    <node name="demo_navigator" pkg="motion_planner_with_drl" type="demo_navigator_with_odom"/>
+    <node name="localmap2scan" pkg="motion_planner_with_drl" type="localmap_scan"/>
+
     <node name="mpdrl" pkg="motion_planner_with_drl" type="motion_planner_with_drl" output="screen">
         <param name="HZ" value="$(arg hz)" type="int"/>
         <param name="EPSILON" value="$(arg epsilon)" type="double"/>
