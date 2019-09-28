@@ -12,4 +12,5 @@ docker run -it --rm \
   --net='host' \
   --name="mpdrl" \
   arijun/mpdrl \
-  bash -c "roslaunch motion_planner_with_drl local_planner.launch  --screen"
+  bash
+  # bash -c "roslaunch motion_planner_with_drl local_planner.launch  --screen"

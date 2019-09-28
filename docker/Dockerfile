@@ -46,7 +46,7 @@ RUN apt-get update && apt-get install -y vim && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /root/catkin_ws/src
 
-RUN git clone https://github.com/Jumpei-Arima/motion_planner_with_drl.git \
+RUN git clone -b infant  https://github.com/Jumpei-Arima/motion_planner_with_drl.git \
 	&& cd /root/catkin_ws \
 	&& source /opt/ros/kinetic/setup.bash; catkin_make
 
