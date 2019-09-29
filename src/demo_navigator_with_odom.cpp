@@ -3,6 +3,7 @@
 #include <geometry_msgs/PoseStamped.h>
 #include <nav_msgs/Odometry.h>
 #include <tf/tf.h>
+#include <tf/transform_broadcaster.h>
 
 class DemoNavigator{
 	public:
@@ -18,6 +19,8 @@ class DemoNavigator{
 		//publisher
 		ros::Publisher local_goal_pub;
 
+        //tf
+        tf::TransformBroadcaster odom_broadcaster;
 
 		double position_x;
 		double position_y;
@@ -28,6 +31,7 @@ class DemoNavigator{
 		bool finish;
 		bool odom_callback_first;
 		std::string ROBOT_FRAME;
+        geometry_msgs::TransformStamped odom_tf;
 
 		double normalize(double z);
 		double angle_diff(double a, double b);
@@ -79,6 +83,15 @@ void DemoNavigator::OdomCallback(const nav_msgs::OdometryConstPtr& msg)
 		orientation_yaw += odom.twist.twist.angular.z*dt;
 		position_x += dist * cos(orientation_yaw);
 		position_y += dist * sin(orientation_yaw);
+
+        odom_tf.header = odom.header;
+        odom_tf.header.frame_id = "odom";
+        odom_tf.child_frame_id = ROBOT_FRAME;
+        odom_tf.transfrom.translation.x = position_x;
+        odom_tf.transfrom.translation.y = position_y;
+        odom_tf.transfrom.rotation = tf::createQuaternionMsgFromYaw(yaw);
+        odom_broadcaster.sendTransform(odom_tf);
+
 
 		//calc relative goal(local_goal)
 		float dx = -position_x + goals[goal_count][0];
