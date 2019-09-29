@@ -87,9 +87,9 @@ void DemoNavigator::OdomCallback(const nav_msgs::OdometryConstPtr& msg)
         odom_tf.header = odom.header;
         odom_tf.header.frame_id = "odom";
         odom_tf.child_frame_id = ROBOT_FRAME;
-        odom_tf.transfrom.translation.x = position_x;
-        odom_tf.transfrom.translation.y = position_y;
-        odom_tf.transfrom.rotation = tf::createQuaternionMsgFromYaw(yaw);
+        odom_tf.transform.translation.x = position_x;
+        odom_tf.transform.translation.y = position_y;
+        odom_tf.transform.rotation = tf::createQuaternionMsgFromYaw(orientation_yaw);
         odom_broadcaster.sendTransform(odom_tf);
 
 
