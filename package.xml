@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>motion_planner_with_drl</name>
+  <name>mpdrl_ros</name>
   <version>0.0.0</version>
-  <description>The motion_planner_with_drl package</description>
+  <description>The mpdrl_ros package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/motion_planner_with_drl</url> -->
+  <!-- <url type="website">http://wiki.ros.org/mpdrl_ros</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->

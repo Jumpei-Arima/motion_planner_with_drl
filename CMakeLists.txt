@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.3)
-project(motion_planner_with_drl)
+project(mpdrl_ros)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
@@ -15,7 +15,7 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
 )
 
-set(Caffe2_DIR "$ENV{HOME}pytorch/torch/share/cmake/Caffe2/")
+set(Caffe2_DIR "$ENV{HOME}pytorch/torch/share/cmake/Caffe2")
 set(Torch_DIR "$ENV{HOME}/pytorch/torch/share/cmake/Torch")
 find_package(Torch REQUIRED)
 
@@ -109,7 +109,7 @@ find_package(Torch REQUIRED)
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES motion_planner_with_drl
+#  LIBRARIES mpdrl_ros
 #  CATKIN_DEPENDS roscpp rospy
 #  DEPENDS system_lib
 )
@@ -127,7 +127,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/motion_planner_with_drl.cpp
+#   src/${PROJECT_NAME}/mpdrl_ros.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -140,10 +140,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/motion_planner_with_drl_node.cpp)
 add_executable(localmap_scan src/localmap_scan.cpp)
-add_executable(demo_navigator src/demo_navigator.cpp)
-add_executable(test_navigator src/test_navigator.cpp)
-add_executable(demo_navigator_with_odom src/demo_navigator_with_odom.cpp)
-add_executable(motion_planner_with_drl src/motion_planner_with_drl.cpp)
+add_executable(mpdrl src/mpdrl.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -157,10 +154,7 @@ add_executable(motion_planner_with_drl src/motion_planner_with_drl.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(localmap_scan ${catkin_LIBRARIES})
-target_link_libraries(demo_navigator ${catkin_LIBRARIES})
-target_link_libraries(test_navigator ${catkin_LIBRARIES})
-target_link_libraries(demo_navigator_with_odom ${catkin_LIBRARIES})
-target_link_libraries(motion_planner_with_drl ${catkin_LIBRARIES} ${TORCH_LIBRARIES})
+target_link_libraries(mpdrl ${catkin_LIBRARIES} ${TORCH_LIBRARIES})
 
 #############
 ## Install ##

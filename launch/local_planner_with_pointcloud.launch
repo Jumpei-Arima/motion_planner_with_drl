@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<launch>
+	<arg name="hz" default="10"/>
+	<arg name="epsilon" default="1.0"/>
+	<arg name="max_speed" default="1.0"/>
+	<arg name="max_yawrate" default="1.0"/>
+	<arg name="model_path" default="/root/models/model/model.pt"/>
+
+	<node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan_node">
+		<remap from="/cloud_in" to="/velodyne_obstacles"/>
+		<remap from="/scan" to="/velodyne/scan"/>
+		<param name="min_height" type="double" value="-1.5"/>
+		<param name="max_height" type="double" value="1.5"/>
+		<param name="angle_min" type="double" value="-1.5708"/>
+		<param name="angle_max" type="double" value="1.5708"/>
+		<param name="range_min" type="double" value="0.1"/>
+		<param name="range_max" type="double" value="10.0"/>
+		<param name="angle_increment" type="double" value="0.00436471"/>
+		<param name="target_frame" type="str" value="velodyne"/>
+	</node>
+
+    <node name="mpdrl" pkg="mpdrl_ros" type="mpdrl" output="screen">
+		<param name="HZ" value="$(arg hz)" type="int"/>
+		<param name="EPSILON" value="$(arg epsilon)" type="double"/>
+		<param name="MAX_SPEED" value="$(arg max_speed)" type="double"/>
+		<param name="MAX_YAWRATE" value="$(arg max_yawrate)" type="double"/>
+		<param name="MODEL_PATH" value="$(arg model_path)" type="str"/>
+		<remap from="/scan" to="/velodyne/scan"/>
+		<remap from="/cmd_vel" to="/cmd_vel"/>
+	</node>
+</launch>

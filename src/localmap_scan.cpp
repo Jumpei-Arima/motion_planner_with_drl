@@ -7,7 +7,6 @@
 #include <sensor_msgs/LaserScan.h>
 #include <tf/transform_listener.h>
 
-
 /*global variables*/
 nav_msgs::OccupancyGrid local_map;
 sensor_msgs::LaserScan scan;

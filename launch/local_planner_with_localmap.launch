@@ -6,13 +6,18 @@
 	<arg name="max_yawrate" default="1.0"/>
 	<arg name="model_path" default="/root/models/model/model.pt"/>
 
+	<node name="localmap2scan" pkg="mpdrl_ros" type="localmap_scan">
+		<remap from="/local_map" to="/local_map"/>
+		<remap from="/local_map/scan" to="/local_map/scan"/>
+	</node>
+
     <node name="mpdrl" pkg="mpdrl_ros" type="mpdrl" output="screen">
 		<param name="HZ" value="$(arg hz)" type="int"/>
 		<param name="EPSILON" value="$(arg epsilon)" type="double"/>
 		<param name="MAX_SPEED" value="$(arg max_speed)" type="double"/>
 		<param name="MAX_YAWRATE" value="$(arg max_yawrate)" type="double"/>
 		<param name="MODEL_PATH" value="$(arg model_path)" type="str"/>
+		<remap from="/scan" to="/local_map/scan"/>
 		<remap from="/cmd_vel" to="/cmd_vel"/>
-		<remap from="/scan" to="/scan"/>
 	</node>
 </launch>
