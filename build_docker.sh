@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t arijun/mpdrl  ./docker
+docker build -t arijun/mpdrl_ros  ./docker
