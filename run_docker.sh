@@ -2,14 +2,9 @@
 
 echo "=== run_docker ==="
 
-xhost +local:docker
-
 docker run -it --rm \
-  --env=QT_X11_NO_MITSHM=1 \
-  --env=DISPLAY=$DISPLAY \
-  --volume="/tmp/.X11-unix:/tmp/.X11-unix:rw" \
-  --volume="${PWD}/models:/root/models" \
+  --volume="${PWD}:/root/catkin_ws/src/mpdrl_ros" \
   --net='host' \
   --name="mpdrl" \
   arijun/mpdrl \
-  bash -c "roslaunch motion_planner_with_drl local_planner.launch  --screen"
+  bash -c "catkin_make && roslaunch mpdrl_ros local_planner.launch"
