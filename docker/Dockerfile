@@ -1,30 +1,23 @@
-FROM ros:kinetic-ros-base
+FROM ros:melodic-ros-base
 
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update
 
-RUN apt-get install -y sudo\
-                       wget\
-                       lsb-release\
-					   git \
+RUN apt-get install -y git \
+					   python-pip \
+					   ros-melodic-tf* \
     && rm -rf /var/lib/apt/lists/*
 
-RUN apt-get update
-
-RUN apt-get install -y python-pip \
-	&& pip install typing
-
-RUN apt-get install -y ros-kinetic-pcl-ros* \
-    && rm -rf /var/lib/apt/lists/*
+RUN pip install typing
 
 WORKDIR /root
 
 RUN mkdir -p catkin_ws/src
 
-RUN cd catkin_ws/src && source /opt/ros/kinetic/setup.bash; catkin_init_workspace
+RUN cd catkin_ws/src && source /opt/ros/melodic/setup.bash; catkin_init_workspace
 
-RUN cd catkin_ws && source /opt/ros/kinetic/setup.bash; catkin_make
+RUN cd catkin_ws && source /opt/ros/melodic/setup.bash; catkin_make
 
 RUN cd /root && echo source /root/catkin_ws/devel/setup.bash >> .bashrc
 
@@ -42,16 +35,10 @@ RUN git submodule update --init --recursive \
     && cd build_libtorch \
     && python ../tools/build_libtorch.py
 
-RUN apt-get update && apt-get install -y vim && rm -rf /var/lib/apt/lists/*
-
-WORKDIR /root/catkin_ws/src
-
-RUN git clone https://github.com/Jumpei-Arima/motion_planner_with_drl.git \
-	&& cd /root/catkin_ws \
-	&& source /opt/ros/kinetic/setup.bash; catkin_make
-
 WORKDIR /root
 
 COPY ./ros_entrypoint.sh /
 
 CMD ["/ros_entrypoint.sh"]
+
+WORKDIR /root/catkin_ws
