@@ -4,7 +4,7 @@
 	<arg name="epsilon" default="1.0"/>
 	<arg name="max_speed" default="1.0"/>
 	<arg name="max_yawrate" default="1.0"/>
-	<arg name="model_path" default="/root/models/model/model.pt"/>
+	<arg name="model_path" default="$(find mpdrl_ros)/model/model.pt"/>
 
     <node name="mpdrl" pkg="mpdrl_ros" type="mpdrl" output="screen">
 		<param name="HZ" value="$(arg hz)" type="int"/>
