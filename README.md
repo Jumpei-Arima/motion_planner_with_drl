@@ -1,6 +1,6 @@
 # mpdrl-ros
 
-[![Build Status](https://travis-ci.org/Jumpei-Arima/mpdrl.svg?branch=master)](https://travis-ci.org/Jumpei-Arima/mpdrl)
+[![Build Status](https://travis-ci.org/Jumpei-Arima/mpdrl_ros.svg?branch=master)](https://travis-ci.org/Jumpei-Arima/mpdrl_ros)
 
 ## prerequisite
 You need to convert your PyTorch Model to Torch Script by tracing.
