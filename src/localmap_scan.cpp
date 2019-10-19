@@ -17,14 +17,10 @@ void index_to_point(nav_msgs::OccupancyGrid grid, int index, int& x, int& y)
 {
     x = index%grid.info.width - grid.info.width/2.0;
     y = index/grid.info.width - grid.info.height/2.0;
-    // std::cout << "index = " << index << std::endl;
-    // std::cout << "x = " << x << std::endl;
-    // std::cout << "y = " << y << std::endl;
 }
 
 int point_to_index(nav_msgs::OccupancyGrid grid, int x, int y)
 {
-    // std::cout << "- POINT TO INDEX -" << std::endl;
     int x_ = x + grid.info.width/2.0;
     int y_ = y + grid.info.height/2.0;
     return  y_*grid.info.width + x_;
@@ -89,13 +85,13 @@ double map_calc_range(nav_msgs::OccupancyGrid map, double ox, double oy, double 
 
     if(steep)
     {
-        if(!((y >= 0) && (y < map.info.width) && (x >= 0) && (x < map.info.height))
+        if(!((y >= 0) && (y < int(map.info.width)) && (x >= 0) && (x < int(map.info.height)))
                 || map.data[(y + x *map.info.width)] != 0)
             return sqrt((x-x0)*(x-x0) + (y-y0)*(y-y0)) *map.info.resolution;
     }
     else    
     {
-        if(!((x >= 0) && (x < map.info.width) && (y >= 0) && (y < map.info.height))
+        if(!((x >= 0) && (x < int(map.info.width)) && (y >= 0) && (y < int(map.info.height)))
                 || map.data[(x + y *map.info.width)] != 0)
             return sqrt((x-x0)*(x-x0) + (y-y0)*(y-y0)) *map.info.resolution;
     }
@@ -111,13 +107,13 @@ double map_calc_range(nav_msgs::OccupancyGrid map, double ox, double oy, double 
 
         if(steep)
         {
-            if(!((y >= 0) && (y < map.info.width) && (x >= 0) && (x < map.info.height))
+            if(!((y >= 0) && (y < int(map.info.width)) && (x >= 0) && (x < int(map.info.height)))
                     || map.data[(y + x *map.info.width)] != 0)
             return sqrt((x-x0)*(x-x0) + (y-y0)*(y-y0)) * map.info.resolution;
         }
         else
         {
-            if(!((x >= 0) && (x < map.info.width) && (y >= 0) && (y < map.info.height))
+            if(!((x >= 0) && (x < int(map.info.width)) && (y >= 0) && (y < int(map.info.height)))
                     || map.data[(x + y *map.info.width)] != 0)
             return sqrt((x-x0)*(x-x0) + (y-y0)*(y-y0)) * map.info.resolution;
         }
