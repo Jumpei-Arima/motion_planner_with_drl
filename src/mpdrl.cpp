@@ -34,11 +34,14 @@ class MPDRL{
         double pre_v;
         double pre_w;
         double epsilon;
-        float obs[36];
+        std::vector<float> obs;
         int HZ;
         double MAX_SPEED;
         double MAX_YAWRATE;
         std::string MODEL_PATH;
+        int KERNEL_SIZE;
+        double MAX_RANGE;
+        double MAX_DIS;
 
         double get_yaw(geometry_msgs::Quaternion q);
 };
@@ -59,6 +62,9 @@ MPDRL::MPDRL()
     private_nh.param("MAX_YAWRATE", MAX_YAWRATE, {1.0});
     private_nh.param("MODEL_PATH", MODEL_PATH, {"model.pt"});
     std::cout << "Model path : " << MODEL_PATH << std::endl;
+    private_nh.param("KERNEL_SIZE", KERNEL_SIZE, {20});
+    private_nh.param("MAX_RANGE", MAX_RANGE, {10.0});
+    private_nh.param("MAX_DIS", MAX_DIS, {10.0});
 
     module = torch::jit::load(MODEL_PATH);
     target_received = false;
@@ -73,17 +79,18 @@ void MPDRL::ScanCallback(const sensor_msgs::LaserScanConstPtr& msg)
 {
     sensor_msgs::LaserScan scan;
     scan = *msg;
-    for(int i=0; i<sizeof(obs)/sizeof(obs[0]); i++){
+    obs.clear();
+    for(int i=0; i<int(scan.ranges.size()/KERNEL_SIZE); i++){
         float min_range = scan.range_max;
-        for(int j=0; j<20; j++){
-            float r = scan.ranges[i*20+j];
+        for(int j=0; j<KERNEL_SIZE; j++){
+            float r = scan.ranges[i*KERNEL_SIZE+j];
             if(r < min_range){
                 min_range = r;
             }
         }
-        obs[i] = min_range;
-        if(obs[i]>10.0){
-            obs[i] = 10.0;
+        obs.push_back(min_range);
+        if(obs[i]>MAX_RANGE){
+            obs[i] = MAX_RANGE;
         }
     }
     scan_received = true;
@@ -97,8 +104,8 @@ void MPDRL::TargetCallback(const geometry_msgs::PoseStampedConstPtr& msg)
     float x = local_goal.pose.position.x;
     float y = local_goal.pose.position.y;
     dis = sqrt(x*x + y*y);
-    if(dis>10.0){
-        dis = 10.0;
+    if(dis>MAX_DIS){
+        dis = MAX_DIS;
     }
     target_received = true;
 }
