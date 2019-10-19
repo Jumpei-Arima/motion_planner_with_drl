@@ -5,8 +5,8 @@ SHELL ["/bin/bash", "-c"]
 RUN apt-get update
 
 RUN apt-get install -y git \
-					   python-pip \
-					   ros-melodic-tf* \
+                       python-pip \
+                       ros-melodic-tf* \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pip install typing
