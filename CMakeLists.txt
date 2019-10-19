@@ -18,16 +18,21 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
 )
 
-find_package_handle_standard_args(Torch DEFAULT_MSG)
+# set(Torch_DIR "$ENV{HOME}/pytorch/torch/share/cmake/Torch")
+# find_package(Torch REQUIRED)
 
+# find_package(PkgConfig REQUIRED)
+# pkg_check_modules(TORCH Torch)
+#
+find_package_handle_standard_args(Torch DEFAULT_MSG)
 if(${TORCH_FOUND})
   message("-- ${ESC}[32mTorch was found!!!${ESC}[0m")
-  set(Caffe2_DIR "$ENV{HOME}pytorch/torch/share/cmake/Caffe2")
   set(Torch_DIR "$ENV{HOME}/pytorch/torch/share/cmake/Torch")
   find_package(Torch REQUIRED)
 else()
   message("-- ${ESC}[31mTorch was NOT found!!!${ESC}[0m")
 endif()
+
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
