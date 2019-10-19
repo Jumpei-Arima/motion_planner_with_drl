@@ -18,12 +18,6 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
 )
 
-# set(Torch_DIR "$ENV{HOME}/pytorch/torch/share/cmake/Torch")
-# find_package(Torch REQUIRED)
-
-# find_package(PkgConfig REQUIRED)
-# pkg_check_modules(TORCH Torch)
-#
 find_package_handle_standard_args(Torch DEFAULT_MSG)
 if(${TORCH_FOUND})
   message("-- ${ESC}[32mTorch was found!!!${ESC}[0m")
@@ -156,7 +150,7 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/motion_planner_with_drl_node.cpp)
 add_executable(localmap_scan src/localmap_scan.cpp)
 if(${TORCH_FOUND})
-	add_executable(mpdrl src/mpdrl.cpp)
+    add_executable(mpdrl src/mpdrl.cpp)
 endif()
 
 ## Rename C++ executable without prefix
@@ -172,7 +166,7 @@ endif()
 ## Specify libraries to link a library or executable target against
 target_link_libraries(localmap_scan ${catkin_LIBRARIES})
 if(${TORCH_FOUND})
-	target_link_libraries(mpdrl ${catkin_LIBRARIES} ${TORCH_LIBRARIES})
+    target_link_libraries(mpdrl ${catkin_LIBRARIES} ${TORCH_LIBRARIES})
 endif()
 
 #############
