@@ -30,7 +30,6 @@ RUN git clone https://github.com/pytorch/pytorch.git
 WORKDIR /root/pytorch
 
 RUN git submodule update --init --recursive \
-    && python setup.py build\
     && mkdir build_libtorch \
     && cd build_libtorch \
     && python ../tools/build_libtorch.py
