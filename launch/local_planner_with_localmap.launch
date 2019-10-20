@@ -24,6 +24,6 @@
         <param name="MAX_DIS" value="$(arg max_dis)" type="double"/>
         <param name="MODEL_PATH" value="$(arg model_path)" type="str"/>
         <remap from="/scan" to="/local_map/scan"/>
-        <remap from="/cmd_vel" to="/velocity"/>
+        <remap from="/cmd_vel" to="/cmd_vel"/>
     </node>
 </launch>
