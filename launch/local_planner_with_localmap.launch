@@ -7,7 +7,7 @@
     <arg name="kernel_size" default="20"/>
     <arg name="max_range" default="10.0"/>
     <arg name="max_dis" default="10.0"/>
-    <arg name="model_path" default="/home/amsl/ros_catkin_ws/src/mpdrl_ros/model/libtorch_model/rnn_ppo_model.pt"/>
+    <arg name="model_path" default="$(find mpdrl_ros)/model/model.pt"/>
 
     <node name="localmap2scan" pkg="mpdrl_ros" type="localmap_scan">
         <remap from="/local_map" to="/local_costmap"/>

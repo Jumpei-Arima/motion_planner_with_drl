@@ -7,7 +7,8 @@
     <arg name="kernel_size" default="20"/>
     <arg name="max_range" default="10.0"/>
     <arg name="max_dis" default="10.0"/>
-    <arg name="model_path" default="/root/models/model/model.pt"/>
+    <arg name="model_path" default="$(find mpdrl_ros)/model/model.pt"/>
+
 
     <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan_node">
         <remap from="/cloud_in" to="/velodyne_obstacles"/>
