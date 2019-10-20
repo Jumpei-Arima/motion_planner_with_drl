@@ -10,7 +10,7 @@
     <arg name="model_path" default="$(find mpdrl_ros)/model/model.pt"/>
 
     <node name="localmap2scan" pkg="mpdrl_ros" type="localmap_scan">
-        <remap from="/local_map" to="/local_costmap"/>
+        <remap from="/local_map" to="/local_map"/>
         <remap from="/local_map/scan" to="/local_map/scan"/>
     </node>
 
