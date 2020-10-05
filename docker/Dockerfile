@@ -1,38 +1,29 @@
-FROM ros:melodic-ros-base
+FROM ros:noetic-ros-base
 
 SHELL ["/bin/bash", "-c"]
 
 RUN apt-get update
 
-RUN apt-get install -y git \
-                       python-pip \
-                       ros-melodic-tf* \
+RUN apt-get install -y --no-install-recommends \
+                   git \
+                   python3-pip \
+                   ros-noetic-tf* \
     && rm -rf /var/lib/apt/lists/*
-
-RUN pip install typing
 
 WORKDIR /root
 
-RUN mkdir -p catkin_ws/src
+RUN mkdir -p catkin_ws/src && \
+    cd catkin_ws && \
+    source /opt/ros/noetic/setup.bash; catkin_make
 
-RUN cd catkin_ws/src && source /opt/ros/melodic/setup.bash; catkin_init_workspace
-
-RUN cd catkin_ws && source /opt/ros/melodic/setup.bash; catkin_make
-
-RUN cd /root && echo source /root/catkin_ws/devel/setup.bash >> .bashrc
+RUN echo source /root/catkin_ws/devel/setup.bash >> ~/.bashrc
 
 ENV ROS_PACKAGE_PATH=/root/catkin_ws:$ROS_PACKAGE_PATH
-
 ENV ROS_WORKSPACE=/root/catkin_ws
 
-RUN git clone https://github.com/pytorch/pytorch.git
+RUN pip3 install -U pip
 
-WORKDIR /root/pytorch
-
-RUN git submodule update --init --recursive \
-    && mkdir build_libtorch \
-    && cd build_libtorch \
-    && python ../tools/build_libtorch.py
+RUN pip3 install torch pfrl
 
 WORKDIR /root
 
