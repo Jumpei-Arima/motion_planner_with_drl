@@ -139,7 +139,6 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/motion_planner_with_drl_node.cpp)
 add_executable(localmap_scan src/localmap_scan.cpp)
-add_executable(navigator src/navigator.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -153,7 +152,6 @@ add_executable(navigator src/navigator.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(localmap_scan ${catkin_LIBRARIES})
-target_link_libraries(navigator ${catkin_LIBRARIES})
 
 #############
 ## Install ##
