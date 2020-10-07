@@ -15,6 +15,16 @@ class MotionPlannerWithDRL:
     def __init__(self):
         rospy.init_node('mpdrl', anonymous=True)
 
+        # param
+        self.HZ = rospy.get_param("~HZ", 10)
+        self.MAX_SPEED = rospy.get_param("~MAX_SPEED", 1.0)
+        self.MAX_YAWRATE = rospy.get_param("~MAX_YAWRATE", 1.0)
+        self.MAX_DIS = rospy.get_param("~MAX_DIS", 10.0)
+        self.LIDAR_SIZE = rospy.get_param("~LIDAR_SIZE", 36)
+        self.MAX_RANGE = rospy.get_param("~MAX_RANGE", 10.0)
+        self.GOAL_TOLERANCE = rospy.get_param("~GOAL_TOLERANCE", 0.3)
+        self.MODEL_PATH = rospy.get_param("~MODEL_PATH")
+
         # subscriber
         scan_sub = rospy.Subscriber('/scan', LaserScan, self.scan_callback)
         goal_sub = rospy.Subscriber('/target', PoseStamped, self.target_callback)
@@ -26,18 +36,13 @@ class MotionPlannerWithDRL:
         self.scan_data = None
         self.target_data = None
 
-        self.MAX_DIS = 10.0
-        self.LIDAR_SIZE = 36
-        self.MAX_RANGE = 10.0
-
-        model_path = os.path.join(os.path.dirname(__file__), "model", "ppo")
-        self.agent = pfrl_ppo_agent(model_path)
+        self.agent = pfrl_ppo_agent(self.MODEL_PATH)
         
     def scan_callback(self, data):
         scan = LaserScan()
         scan = data
         scan_ranges =list(scan.ranges)
-        scan_ranges = self.rotate(scan_ranges, int(len(scan_ranges)/2))
+        # scan_ranges = self.rotate(scan_ranges, int(len(scan_ranges)/2))
         min_idx = int((-np.pi*0.5 - scan.angle_min) / scan.angle_increment)
         max_idx = len(scan.ranges) - int((scan.angle_max - np.pi*0.5) / scan.angle_increment)
         kernel_size = int((max_idx - min_idx) / self.LIDAR_SIZE)
@@ -50,9 +55,10 @@ class MotionPlannerWithDRL:
         ranges = np.array(ranges[min_idx:int(min_idx+kernel_size*self.LIDAR_SIZE)])
         ranges = ranges.reshape([-1, kernel_size])
         self.scan_data = np.amin(ranges, axis=1).tolist()
+
         input_scan = scan
-        input_scan.angle_min = np.pi * 0.5
-        input_scan.angle_max = -np.pi * 0.5
+        input_scan.angle_min = -np.pi * 0.5
+        input_scan.angle_max = np.pi * 0.5
         input_scan.angle_increment = np.pi / self.LIDAR_SIZE
         ranges = []
         for r in self.scan_data:
@@ -71,7 +77,7 @@ class MotionPlannerWithDRL:
         self.target_data = [dis, math.sin(yaw), math.cos(yaw)]
 
     def process(self):
-        r = rospy.Rate(10)
+        r = rospy.Rate(self.HZ)
         while not rospy.is_shutdown():
             print("=======================")
             print("motion planner with drl")
@@ -82,20 +88,15 @@ class MotionPlannerWithDRL:
                 print("===== target =====")
                 print(self.target_data)
                 action = self.agent.get_action(state)
-                if self.target_data[0] <= 0.3:
+                if self.target_data[0] <= self.GOAL_TOLERANCE:
                     action = [0.0, 0.0]
             else:
                 print("target: ", self.target_data is not None)
                 print("scan: ", self.scan_data is not None)
             cmd_vel = Twist()
-            if(action[0]<0.0):
-                action[0] = 0.0
-            elif(action[0]>0.3):
-                action[0] = 0.3
-            # if(action[1]<-0.5):
-            #     action[1] = -0.5
-            # elif(action[1]>0.5):
-            #     action[1] = 0.5
+            action[0] *= self.MAX_SPEED
+            action[0] = min(max(action[0], 0.0), self.MAX_SPEED)
+            action[1] = min(max(action[1], -self.MAX_YAWRATE), self.MAX_YAWRATE)
             cmd_vel.linear.x = action[0]
             cmd_vel.angular.z = action[1]
             print("===== action =====")

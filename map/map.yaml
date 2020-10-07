@@ -1,0 +1,37 @@
+NODE:
+    - id: 0
+      point:
+           x: 0
+           y: 0
+    - id: 1
+      point:
+           x: 17.8
+           y: -1.0
+    - id: 2
+      point:
+           x: 17.0
+           y: 6.3
+    - id: 3
+      point:
+           x: 1.5 
+           y: 6.8
+    - id: 4
+      point:
+           x: -14.8 
+           y: 7.9
+    - id: 5
+      point:
+           x: -15.2
+           y: 1.2
+    - id: 6
+      point:
+           x: -15.7
+           y: -6.2
+    - id: 7
+      point:
+           x: 0.2
+           y: -7.1
+    - id: 8
+      point:
+           x: 17.4
+           y: -7.7
