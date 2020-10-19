@@ -2,3 +2,5 @@
 *.tar
 
 *.pt
+
+model/
