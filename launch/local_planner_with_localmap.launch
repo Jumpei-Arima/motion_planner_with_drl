@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
 <launch>
     <arg name="hz" default="10"/>
-    <arg name="epsilon" default="1.0"/>
     <arg name="max_speed" default="1.0"/>
     <arg name="max_yawrate" default="1.0"/>
-    <arg name="kernel_size" default="20"/>
+    <arg name="lidar_size" default="36"/>
     <arg name="max_range" default="10.0"/>
     <arg name="max_dis" default="10.0"/>
+    <arg name="goal_tolerance" default="0.3"/>
     <arg name="model_path" default="$(find mpdrl_ros)/model/model.pt"/>
 
     <node name="localmap2scan" pkg="mpdrl_ros" type="localmap_scan">
@@ -14,16 +14,16 @@
         <remap from="/local_map/scan" to="/local_map/scan"/>
     </node>
 
-    <node name="mpdrl" pkg="mpdrl_ros" type="mpdrl" output="screen">
+    <node name="mpdrl" pkg="mpdrl_ros" type="mpdrl.py" output="screen">
         <param name="HZ" value="$(arg hz)" type="int"/>
-        <param name="EPSILON" value="$(arg epsilon)" type="double"/>
         <param name="MAX_SPEED" value="$(arg max_speed)" type="double"/>
         <param name="MAX_YAWRATE" value="$(arg max_yawrate)" type="double"/>
-        <param name="KERNEL_SIZE" value="$(arg kernel_size)" type="int"/>
+        <param name="LIDAR_SIZE" value="$(arg lidar_size)" type="int"/>
         <param name="MAX_RANGE" value="$(arg max_range)" type="double"/>
         <param name="MAX_DIS" value="$(arg max_dis)" type="double"/>
+        <param name="GOAL_TOLERANCE" value="$(arg goal_tolerance)"/>
         <param name="MODEL_PATH" value="$(arg model_path)" type="str"/>
-        <remap from="/scan" to="/local_map/scan"/>
         <remap from="/cmd_vel" to="/cmd_vel"/>
+        <remap from="/scan" to="/local_map/scan"/>
     </node>
 </launch>

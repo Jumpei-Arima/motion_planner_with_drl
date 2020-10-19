@@ -7,11 +7,13 @@
     <arg name="max_range" default="30.0"/>
     <arg name="max_dis" default="20.0"/>
     <arg name="goal_tolerance" default="1.0"/>
-    <arg name="model_path" default="$(find mpdrl_ros)/model/ppo"/>
+    <arg name="algorithm" default="ppo"/>
+    <arg name="model_path" default="$(find mpdrl_ros)/model"/>
     <arg name="map_path" default="$(find mpdrl_ros)/map/map.yaml"/>
     <arg name="use_map" default="true"/>
     <arg name="timeout" default="60"/>
     <arg name="use_navigator" default="true"/>
+    <arg name="rviz" default="true"/>
 
     <node name="mpdrl" pkg="mpdrl_ros" type="mpdrl_ros.py">
         <param name="HZ" value="$(arg hz)" type="int"/>
@@ -21,6 +23,7 @@
         <param name="MAX_RANGE" value="$(arg max_range)" type="double"/>
         <param name="MAX_DIS" value="$(arg max_dis)" type="double"/>
         <param name="GOAL_TOLERANCE" value="$(arg goal_tolerance)"/>
+        <param name="ALGORITHM" value="$(arg algorithm)"/>
         <param name="MODEL_PATH" value="$(arg model_path)" type="str"/>
         <remap from="/cmd_vel" to="/cmd_vel"/>
         <remap from="/scan" to="/front_laser/scan"/>
